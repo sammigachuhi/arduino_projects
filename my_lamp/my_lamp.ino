@@ -1,6 +1,6 @@
 int photoResistorPin = A0;
 int pin1 = 2;
-int darknessValue = 10;
+int darknessValue = 11;
 
 // first read photoResistor values -- check
 // now get the output pin for your bulb
@@ -15,7 +15,7 @@ void loop() {
   int photoResistorLight = analogRead(photoResistorPin);
   // Serial.println("============Photoresistor readings:==============");
   Serial.println(photoResistorLight);
-  delay(1000);
+  delay(100);
 
   if (photoResistorLight < darknessValue) {
     digitalWrite(pin1, HIGH);
