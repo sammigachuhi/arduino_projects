@@ -3,7 +3,7 @@
 
 // LED pins
 int redLED = A0; //12;
-int yelLED = A1;
+int yellowLED = A1;
 int greenLED = A2;
 
 // Value to control lighting
@@ -30,7 +30,7 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   pinMode(redLED, OUTPUT);
-  pinMode(yelLED, OUTPUT);
+  pinMode(yellowLED, OUTPUT);
   pinMode(greenLED, OUTPUT);
   pinMode(piezometerPin, OUTPUT);
 
@@ -50,6 +50,8 @@ void loop() {
   // Solution: https://forum.arduino.cc/t/ir-receiver-issues-in-the-serial-monitor/696792/2
 
   bool isRedOn = analogRead(redLED);
+  bool isYellowOn = analogRead(yellowLED);
+  bool isGreenOn = analogRead(greenLED);
 
   if (IrReceiver.decode()) {
     Serial.println(IrReceiver.decodedIRData.command);
@@ -58,53 +60,32 @@ void loop() {
     // tun on the lightbulbs
     if (value == 12 || value == 24) { // turn on red light
       analogWrite(redLED, 255);
-      analogWrite(yelLED, 0);
+      analogWrite(yellowLED, 0);
       analogWrite(greenLED, 0);
-      lcd.print("STOP!");
-      delay(1500);
-      lcd.clear();
-      // delay(500);
-
     } else if (value == 94 || value == 8) { // turn on yel0 light
       analogWrite(redLED, 0);
-      analogWrite(yelLED, 255);
+      analogWrite(yellowLED, 255);
       analogWrite(greenLED, 0);
-      // Print LCD 
-      lcd.print("GET READY!");
-      delay(1500);
-      lcd.clear();
-      // delay(500);
     } else if (value == 28 || value == 90) { // turn on green light
       analogWrite(redLED, 0);
-      analogWrite(yelLED, 0);
+      analogWrite(yellowLED, 0);
       analogWrite(greenLED, 255);
-      // Print LCD 
-      lcd.print("MOVE!");
-      delay(1500);
-      lcd.clear();
     } else if (value == 66) {
       analogWrite(redLED, 255);
-      analogWrite(yelLED, 255);
+      analogWrite(yellowLED, 255);
       analogWrite(greenLED, 0);
-      lcd.print("ON THE READY!");
-      delay(1500);
-      lcd.clear();
     } else if (value == 82) {
       analogWrite(redLED, 0);
-      analogWrite(yelLED, 255);
+      analogWrite(yellowLED, 255);
       analogWrite(greenLED, 255);
-      // Print LED 
-      lcd.print("ALMOST!");
-      delay(1500);
-      lcd.clear();
     } else if (value == 74) {
       analogWrite(redLED, 0);
       delay(100);
       analogWrite(redLED, 255);
       delay(100);
-      analogWrite(yelLED, 0);
+      analogWrite(yellowLED, 0);
       delay(100);
-      analogWrite(yelLED, 255);
+      analogWrite(yellowLED, 255);
       delay(100);
       analogWrite(greenLED, 0);
       delay(100);
@@ -116,23 +97,45 @@ void loop() {
       delay(100);
       analogWrite(redLED, 255);
       delay(100);
-      analogWrite(yelLED, 0);
+      analogWrite(yellowLED, 0);
       delay(100);
-      analogWrite(yelLED, 255);
+      analogWrite(yellowLED, 255);
       delay(100);
       analogWrite(greenLED, 0);
       delay(100);
       analogWrite(greenLED, 255);
       delay(500);
-      /// Print LCD
-      lcd.print("ALL CLEAR!");
-      delay(1500);
-      lcd.clear();
     } 
 
     delay(500);
     IrReceiver.resume();
   }
 
+  /// Print lcd
+  if (isRedOn == true && (!isYellowOn && !isGreenOn)) {
+    lcd.print("STOP!");
+    delay(500);
+    lcd.clear();
+  } else if (isYellowOn == true && (!isRedOn && !isGreenOn)) {
+    lcd.print("GET READY!");
+    delay(500);
+    lcd.clear();
+  } else if (isGreenOn == true && (!isRedOn && !isYellowOn)) {
+    lcd.print("MOVE!");
+    delay(500);
+    lcd.clear();
+  } else if ( (isRedOn && isYellowOn) && (!isGreenOn) ) {
+    lcd.print("ON THE READY!");
+    delay(500);
+    lcd.clear();
+  } else if ( (isYellowOn && isGreenOn) && (!isRedOn) ) {
+    lcd.print("ALL CLEAR, MOVE!");
+    delay(500);
+    lcd.clear();
+  } else if ( (isRedOn && isYellowOn && isGreenOn) ) {
+    lcd.print("SYSTEM ERROR...");
+    delay(500);
+    lcd.clear();
+  }
 
 }
