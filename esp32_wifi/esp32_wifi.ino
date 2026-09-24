@@ -1,0 +1,30 @@
+#include "WiFi.h"
+
+const char* ssid = "xx"; 
+const char* password = "xxx";
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(115200);
+
+  WiFi.begin(ssid, password);
+
+  while(WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.println("Connecting to WiFi...");
+  }
+
+  Serial.println("Connected to the WiFi network");
+
+  // Print local IP address and start web server 
+  Serial.println("");
+  Serial.println("WiFi connected.");
+  Serial.println("IP address:");
+  Serial.println(WiFi.localIP()); // Show ip address when connected on serial monitor
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+}
